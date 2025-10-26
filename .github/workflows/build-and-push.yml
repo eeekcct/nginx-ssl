@@ -11,7 +11,6 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: nginx-ssl
 
 jobs:
   build-and-push:
@@ -40,7 +39,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ github.repository }}/:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ github.repository }}/:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
