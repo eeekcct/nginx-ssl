@@ -25,6 +25,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: false
-          tags: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
