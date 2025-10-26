@@ -2,25 +2,27 @@ name: Build and Publish Docker Image
 
 on:
   push:
-    branches:
-      - main
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: nginx-ssl
 jobs:
   login:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
 
       - name: Login to GitHub Packages
-        uses: docker/login-action@v3
+        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.CONTAINER_REGISTRY }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker Image
-        run: docker build --tag ghcr.io/$GITHUB_ACTOR/nginx-ssl:latest .
-
-      - name: Push Docker Image
-        run: docker push ghcr.io/$GITHUB_ACTOR/nginx-ssl:latest
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          push: false # true
+          tags: ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{github.sha}}
