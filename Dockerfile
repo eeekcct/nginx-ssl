@@ -1,5 +1,5 @@
 # make stage to generate self-signed certificate
-FROM alpine:3.22 AS alpine
+FROM alpine:3.22@sha256:4b7ce07002c69e8f3d704a9c5d6fd3053be500b7f1c69fc0d80990c2ad8dd412 AS alpine
 
 RUN apk --no-cache add openssl &&\
   openssl genpkey -algorithm RSA -out privkey.pem &&\
@@ -7,7 +7,7 @@ RUN apk --no-cache add openssl &&\
   openssl x509 -req -in csr.pem -signkey privkey.pem -out fullchain.pem -days 365
 
 # nginx stage
-FROM nginx:1.29.3-alpine3.22
+FROM nginx:1.29.3-alpine3.22@sha256:b3c656d55d7ad751196f21b7fd2e8d4da9cb430e32f646adcf92441b72f82b14
 
 RUN mkdir -p /etc/nginx/key
 
