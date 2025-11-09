@@ -27,3 +27,35 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ github.repository }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Build Single-platform for Testing
+        uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}:test
+          load: true
+
+      - name: Start Container
+        run: |
+          docker run -d --name nginx-ssl-test -p 443:443 ${{ env.REGISTRY }}/${{ github.repository }}:test
+          sleep 5
+
+      - name: Test HTTPS Connection
+        run: |
+          echo "Testing HTTPS connection..."
+          curl -k -f https://localhost || exit 1
+          echo "✅ HTTPS connection successful"
+
+      - name: Check SSL Certificate
+        run: |
+          echo "Checking SSL certificate..."
+          echo | openssl s_client -connect localhost:443 -servername localhost 2>/dev/null | openssl x509 -noout -subject -dates
+          echo "✅ SSL certificate verified"
+
+      - name: Cleanup
+        if: always()
+        run: |
+          docker stop nginx-ssl-test || true
+          docker rm nginx-ssl-test || true
