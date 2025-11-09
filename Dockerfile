@@ -7,7 +7,7 @@ RUN apk --no-cache add openssl &&\
   openssl x509 -req -in csr.pem -signkey privkey.pem -out fullchain.pem -days 365
 
 # nginx stage
-FROM nginx:1.29.2-alpine3.22@sha256:61e01287e546aac28a3f56839c136b31f590273f3b41187a36f46f6a03bbfe22
+FROM nginx:1.29.3-alpine3.22@sha256:b3c656d55d7ad751196f21b7fd2e8d4da9cb430e32f646adcf92441b72f82b14
 
 RUN mkdir -p /etc/nginx/key
 
